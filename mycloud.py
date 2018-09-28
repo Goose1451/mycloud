@@ -32,11 +32,21 @@ def blueFlicker():
 
 t = 0
 
+def getWeather():
+    r = requests.get('https://query.yahooapis.com/v1/public/yql?q=select%20item.forecast%20from%20weather.forecast%20 \
+                     where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text=%22portland,%20or%22)&format=json')
+    weather = json.loads(r.text)
+    global todayCode
+    todayCode = (weather['query']['results']['channel'][0]['item']['forecast']['code'])
+
+getWeather()
+timer = time.time()
+
 while True:
     t = t + 1
-    r = requests.get('https://query.yahooapis.com/v1/public/yql?q=select%20item.forecast%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text=%22portland,%20or%22)&format=json')
-    weather = json.loads(r.text)
-    todayCode = (weather['query']['results']['channel'][0]['item']['forecast']['code'])
+    if time.time() - timer > 60:
+        getWeather()
+        timer = time.time()
     print("(" + str(t) + ") Today's code is " + todayCode)
     if todayCode == "32":
         blueFlicker()
@@ -44,4 +54,3 @@ while True:
     else:
         blueFlicker()
         print("today is not 32")
-    time.sleep(60)
