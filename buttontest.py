@@ -30,29 +30,22 @@ def wheel(pos):
         pos -= 170
         return Color(0, pos * 3, 255 - pos * 3)
 
-def theaterChaseRainbow(strip, wait_ms=50):
-    for j in range(256):
-        for q in range(3):
-            for i in range(0, strip.numPixels(), 3):
-                strip.setPixelColor(i+q, wheel((i+j) % 255))
-            strip.show()
-            time.sleep(wait_ms/1000.0)
-            for i in range(0, strip.numPixels(), 3):
-                strip.setPixelColor(i+q, 0)
-
 def rainbowCycle(strip, wait_ms=20, iterations=1):
     for j in range(256 * iterations):
         for i in range(strip.numPixels()):
             strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels()) + j) & 255))
         strip.show()
-        time.sleep(wait_ms/1000.0)
+        #time.sleep(wait_ms/1000.0)
+
+print("Ready")
 
 try:
     while True:
         if GPIO.input(10) == GPIO.HIGH:
             #print("Button was pushed!")
-            #colorAll(strip, Color(0, 90, 0))
+            #colorAll(strip, Color(0, 0, 90))
             rainbowCycle(strip)
+            #time.sleep(60)
         else:
             colorAll(strip, Color(0, 0, 0))
 except KeyboardInterrupt:
